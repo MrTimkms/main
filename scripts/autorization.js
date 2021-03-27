@@ -41,7 +41,21 @@ $(function() {
 }); */
 //Открытие подсистемы сонар
 $(function() {
-  $(document).on("click", "#indexbutnSonar", function() { 
-    $("#SonarQubesystem").show();
+  $(document).on("click", "#indexbutnTest", function() { 
+    $("#SonarQubesystem").hide();
+    $("#testdiv").show();
   });
 });
+$(function() {
+  $(document).on("click", "#indexbutnSonar", function() { 
+    $("#SonarQubesystem").show();
+    $("#testdiv").hide();
+  });
+});
+$(function() {
+  $(document).on("click", "#lunch1c", function() { 
+    var ws = new ActiveXObject("Wscript.Shell");
+    ws.Run("1с.bat",0);
+  });
+});
+

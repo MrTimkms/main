@@ -41,10 +41,20 @@
       </div>
     </div>
   </div>
-<!--   <div class="container container-fluid center-top divVertikalmenu"><input id="Vertikalmenu" type="checkbox"
+  <!--   <div class="container container-fluid center-top divVertikalmenu"><input id="Vertikalmenu" type="checkbox"
       class="form-check-input">Установить меню вертикально?</input></div> -->
-  <div style="margin-top: 10px;"></div>
+
+  <div class="pading10"></div>
   <div id="indexContent" class="container container-fluid">
+    <div class="container container-fluid">
+      <blockquote class="blockquote blockquote-reverse">
+        <p class="m-b-12">Даннная Панель Админитрирования предназначена, как комплексное решение внедрение практик
+          гибкого управления проектом и инструментов непрерывного развёртывания в процесс разработки программного
+          обеспечения на платформе «1С Предприятие». </p>
+        <footer class="blockquote-footer">Разработал стдуент 9ПИм-1 <cite title="Source Title">Тимофеев Г. А.</cite>
+        </footer>
+      </blockquote>
+    </div>
     <div id="indexbutn" class="container container-fluid btn-group">
 
       <button id="indexbutnTest" type="button" class="btn btn-outline-info btn-lg btn-block">
@@ -64,9 +74,10 @@
         4 Подсистема Рестарт сервера 1с
       </button>
     </div>
-  </div>
-   <!--  <button id="goback" type="button" class="btn btn-link">Назад</button> -->
-    <div id="SonarQubesystem" class=" xs-3 container container-fluid ">
+    <!--  <button id="goback" type="button" class="btn btn-link">Назад</button> -->
+    <div id="SonarQubesystem" class=" pading10 container container-fluid ">
+      <p>Данная подсистема позволяет запустить <mark>SonarQube</mark>. Для того, что бы произвести <mark>проверку качества кода</mark> , после выгрузки последней версии конфигурации.</p> 
+
       <button id="indexbutnSonar" type="button" class="btn  btn-outline-secondary  btn-block">
         Запуск SonarQube
       </button>
@@ -79,13 +90,38 @@
         <option value="3">ПКИ</option>
       </select>
       <br></br>
-      <button id="SonarQubescaner" type="button" class="btn  btn-outline-primary">
-        Запуск сканера выбранной подсистемы
+      <!-- Кнопка-триггер модального окна -->
+      <button id="SonarQubescaner" type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop">
+        Запустить сканирование выбранной базы
       </button>
       <br></br>
       <button id="SonarQubeSite" type="button" class="btn  btn-outline-success">
-        Открыть Веб сайт SonarQube 
+        Открыть адрес проекта(отсканированного проекта сонар сканером)
       </button>
+      <!-- Модальное окно -->
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Заголовок модального окна</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+              Будет запущен процесс проверки на ошибки базы:
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+              <button id="CheckSelectbase" type="button" class="btn btn-primary">Понял</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="testdiv" class="pading10">
+      <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С: Предприятие».</p> 
+      <button id="lunch1c" type="button" class="btn btn-warning">Запуск  «1С: Предприятие» в режиме менеджера по тестированию</button>
     </div>
   </div>
   <script src="scripts/bootstrap.min.js"></script>
