@@ -8,7 +8,6 @@ $(function() {
     var login = $("#inputlogin").val();
     var pass = $("#inputPassword").val();
     var login1 = "admin";
-    var login2 = "Admin";
     if (pass == login1 && login == login1) {
       $("#yespass").show();
       setTimeout(function() {
@@ -22,6 +21,7 @@ $(function() {
     }
   });
 });
+//Горизонтально или вертикально меню
 $(function() {
   $(document).on("click", "#Vertikalmenu", function() {
     var nopas = $("#Vertikalmenu").prop("checked");
@@ -30,5 +30,18 @@ $(function() {
     } else {
       $("#indexbutn").removeClass("btn-group-vertical");
     }
+  });
+});
+//Назад в общее меню
+
+$(function() {
+  $(document).on("click", "#goback", function() {
+    $("#indexbutn").show();
+  });
+});
+//Открытие подсистемы сонар
+$(function() {
+  $(document).on("click", "#indexbutnSonar", function() {
+    $("#indexbutn").hide();
   });
 });

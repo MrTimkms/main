@@ -1,84 +1,91 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=11" />
-    <title></title>
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/autorization.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-  </head>
-  <body>
-    <div id="avtdiv" class="container container-fluid center-top">
-      <div class="row">
-        <div class="col-md-offset-3 col-md-6 mx-auto">
-          <form class="form-horizontal">
-            <span class="heading">АВТОРИЗАЦИЯ</span>
-            <div class="form-group">
-              <input
-                type="login"
-                class="form-control"
-                id="inputlogin"
-                placeholder="login"
-              />
-              <i class="fa fa-user"></i>
-            </div>
-            <div class="form-group help">
-              <input
-                type="password"
-                class="form-control"
-                id="inputPassword"
-                placeholder="Password"
-              />
-              <i class="fa fa-lock"></i>
-              <a href="#" class="fa fa-question-circle"></a>
-            </div>
-            <div class="form-group">
-              <button id="avtbtn" type="button" class="btn btn-default">
-                ВХОД
-              </button>
-            </div>
-          </form>
-          <div style="margin-top: 10px;"></div>
-          <div class="alert alert-success" id="yespass" role="alert">
-            Успешный вход
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <title></title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/autorization.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+
+<body>
+  <div id="avtdiv" class="container container-fluid center-top">
+    <div class="row">
+      <div class="col-md-offset-3 col-md-6 mx-auto">
+        <form class="form-horizontal">
+          <span class="heading">АВТОРИЗАЦИЯ</span>
+          <div class="form-group">
+            <input type="login" class="form-control" id="inputlogin" placeholder="login" />
+            <i class="fa fa-user"></i>
           </div>
-          <div
-            class="alert alert-danger alert-dismissible fade show"
-            id="nopass"
-            role="alert"
-          >
-            Неправильный логин или пароль
+          <div class="form-group help">
+            <input type="password" class="form-control" id="inputPassword" placeholder="Password" />
+            <i class="fa fa-lock"></i>
+            <a href="#" class="fa fa-question-circle"></a>
           </div>
+          <div class="form-group">
+            <button id="avtbtn" type="button" class="btn btn-default">
+              ВХОД
+            </button>
+          </div>
+        </form>
+        <div style="margin-top: 10px;"></div>
+        <div class="alert alert-success" id="yespass" role="alert">
+          Успешный вход
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" id="nopass" role="alert">
+          Неправильный логин или пароль
         </div>
       </div>
     </div>
-    <div class="container container-fluid center-top divVertikalmenu"><input id="Vertikalmenu" type="checkbox" class="form-check-input">Установить меню вертикально?</input></div>
-    <div style="margin-top: 10px;"></div>
-    <div id="indexContent" class="container container-fluid">
-      <div id="indexbutn"  class="container container-fluid btn-group">
-        <button id="indexbutnSonar" type="button" class="btn  btn-outline-secondary  btn-lg btn-block">
-          1 Подсистема sonar qube
-        </button>
-        <br></br>
-        <button id="indexbutnTest" type="button" class="btn btn-outline-info btn-lg btn-block" >
-          2 Запуск Тестирования разработок
-        </button>
-        <br></br>
-        <button id="indexbutOnload" type="button" class="btn btn-lg btn-outline-success">
-         3 Подсистема Обновление 1с
-        </button>
-        <br></br>
-        <button id="indexbutnRestartSrv" type="button" class="btn  btn-lg btn-outline-danger">
-          4 Подсистема Рестарт сервера 1с
-        </button>
-      </div>
+  </div>
+  <div class="container container-fluid center-top divVertikalmenu"><input id="Vertikalmenu" type="checkbox"
+      class="form-check-input">Установить меню вертикально?</input></div>
+  <div style="margin-top: 10px;"></div>
+  <div id="indexContent" class="container container-fluid">
+    <div id="indexbutn" class="container container-fluid btn-group">
+      
+      <button id="indexbutnTest" type="button" class="btn btn-outline-info btn-lg btn-block">
+        1 Тестирование доработки
+      </button>
+      <br></br>
+      <button id="indexbutnSonar" type="button" class="btn  btn-outline-secondary  btn-lg btn-block">
+        2 Подсистема sonar qube
+      </button>
+
+      <br></br>
+      <button id="indexbutOnload" type="button" class="btn btn-lg btn-outline-success">
+        3 Подсистема Обновление 1с
+      </button>
+      <br></br>
+      <button id="indexbutnRestartSrv" type="button" class="btn  btn-lg btn-outline-danger">
+        4 Подсистема Рестарт сервера 1с
+      </button>
     </div>
-    <script src="scripts/bootstrap.min.js"></script>
-    <script src="scripts/jquery-3.6.0.min.js"></script>
-    <script src="scripts/autorization.js"></script>
-  </body>
+    <button id="goback" type="button" class="btn btn-link">Назад</button>
+    <div id="indexbutn" class="container container-fluid btn-group">
+      <button id="indexbutnSonar" type="button" class="btn  btn-outline-secondary  btn-lg btn-block">
+        1 Запуск SonarQube
+      </button>
+      <br></br>
+      <button id="indexbutnTest" type="button" class="btn btn-outline-info btn-lg btn-block">
+        2 Запуск Тестирования разработок
+      </button>
+      <br></br>
+      <button id="indexbutOnload" type="button" class="btn btn-lg btn-outline-success">
+        3 Подсистема Обновление 1с
+      </button>
+      <br></br>
+      <button id="indexbutnRestartSrv" type="button" class="btn  btn-lg btn-outline-danger">
+        4 Подсистема Рестарт сервера 1с
+      </button>
+    </div>
+  </div>
+  <script src="scripts/bootstrap.min.js"></script>
+  <script src="scripts/jquery-3.6.0.min.js"></script>
+  <script src="scripts/autorization.js"></script>
+</body>
+
 </html>
