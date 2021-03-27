@@ -1,6 +1,7 @@
 $("#nopass").hide();
 $("#yespass").hide();
 $("#avtdiv").hide();
+$("#SonarQubesystem").hide();
 //При авторизации
 $(function() {
   $(document).on("click", "#avtbtn", function() {
@@ -22,7 +23,7 @@ $(function() {
   });
 });
 //Горизонтально или вертикально меню
-$(function() {
+/* $(function() {
   $(document).on("click", "#Vertikalmenu", function() {
     var nopas = $("#Vertikalmenu").prop("checked");
     if (nopas == true) {
@@ -31,17 +32,16 @@ $(function() {
       $("#indexbutn").removeClass("btn-group-vertical");
     }
   });
-});
+}); */
 //Назад в общее меню
-
-$(function() {
+/* $(function() {
   $(document).on("click", "#goback", function() {
     $("#indexbutn").show();
   });
-});
+}); */
 //Открытие подсистемы сонар
 $(function() {
-  $(document).on("click", "#indexbutnSonar", function() {
-    $("#indexbutn").hide();
+  $(document).on("click", "#indexbutnSonar", function() { 
+    $("#SonarQubesystem").show();
   });
 });

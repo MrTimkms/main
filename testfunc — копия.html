@@ -41,12 +41,12 @@
       </div>
     </div>
   </div>
-  <div class="container container-fluid center-top divVertikalmenu"><input id="Vertikalmenu" type="checkbox"
-      class="form-check-input">Установить меню вертикально?</input></div>
+<!--   <div class="container container-fluid center-top divVertikalmenu"><input id="Vertikalmenu" type="checkbox"
+      class="form-check-input">Установить меню вертикально?</input></div> -->
   <div style="margin-top: 10px;"></div>
   <div id="indexContent" class="container container-fluid">
     <div id="indexbutn" class="container container-fluid btn-group">
-      
+
       <button id="indexbutnTest" type="button" class="btn btn-outline-info btn-lg btn-block">
         1 Тестирование доработки
       </button>
@@ -64,22 +64,27 @@
         4 Подсистема Рестарт сервера 1с
       </button>
     </div>
-    <button id="goback" type="button" class="btn btn-link">Назад</button>
-    <div id="indexbutn" class="container container-fluid btn-group">
-      <button id="indexbutnSonar" type="button" class="btn  btn-outline-secondary  btn-lg btn-block">
-        1 Запуск SonarQube
+  </div>
+   <!--  <button id="goback" type="button" class="btn btn-link">Назад</button> -->
+    <div id="SonarQubesystem" class=" xs-3 container container-fluid ">
+      <button id="indexbutnSonar" type="button" class="btn  btn-outline-secondary  btn-block">
+        Запуск SonarQube
       </button>
       <br></br>
-      <button id="indexbutnTest" type="button" class="btn btn-outline-info btn-lg btn-block">
-        2 Запуск Тестирования разработок
+      <div id="grpupsrv" class="container container-fluid form-group"></div>
+      <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+        <option selected>Выбрать инф базу для Проверки </option>
+        <option value="1">DPU</option>
+        <option value="2">TOIR</option>
+        <option value="3">ПКИ</option>
+      </select>
+      <br></br>
+      <button id="SonarQubescaner" type="button" class="btn  btn-outline-primary">
+        Запуск сканера выбранной подсистемы
       </button>
       <br></br>
-      <button id="indexbutOnload" type="button" class="btn btn-lg btn-outline-success">
-        3 Подсистема Обновление 1с
-      </button>
-      <br></br>
-      <button id="indexbutnRestartSrv" type="button" class="btn  btn-lg btn-outline-danger">
-        4 Подсистема Рестарт сервера 1с
+      <button id="SonarQubeSite" type="button" class="btn  btn-outline-success">
+        Открыть Веб сайт SonarQube 
       </button>
     </div>
   </div>
