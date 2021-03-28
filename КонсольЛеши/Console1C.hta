@@ -1,0 +1,932 @@
+<html>
+<title>Консоль обновления ИБ и перезапуска службы 1С</title>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+
+<HTA:Application
+    ID="Console1C"
+    Border = thin
+    BorderStyle = Complex
+    ShowInTaskBar = Yes
+    APPLICATIONNAME="Console1C"
+    SCROLL=No
+    SINGLEINSTANCE=Yes
+>
+
+<style type="text/css">
+	
+	*{
+		margin:0px;
+		padding:0px;
+		font-family: Verdana;
+		font-size:16px;
+	}
+	
+	#divUpdateBase, #divRestart, #DivConfparam, #DivRepository, #divServer,#taLog{
+		padding:10px;
+		margin-bottom:5px;
+	}
+	
+	#taLog{
+		width:100%;
+		height:110px;
+		font-size:14px;
+	}
+	
+	#DivConfparam *, #DivRepository *{
+		display:block;
+	}
+	
+	#DivConfparam{
+		float:left;
+	}
+	
+	#BlockMessage, #PermissionCode{
+		width:100%;
+	}
+	
+	td{
+		padding:5px;
+	}
+	
+	#BaseList{
+		width:100%;
+	}
+	
+	#divRestart{
+		padding:20px;
+	}
+	
+	body{
+		background-color:#55AAFF;
+		margin:5px;
+	}
+	
+	div{
+		background-color:white;
+	}
+	
+	h4{
+		text-align:center;
+		margin-bottom: 5px;
+	}
+	
+	.button{
+		margin:0 5px;
+		padding:0px;
+		margin:0px;
+		width:100%;
+	}	
+	
+	#RepositoryPath{
+		width:270px;
+	}
+	
+	#cbUpdateBase{
+		margin-left:10px;
+	}
+	
+	.headerGroup{
+		margin-bottom: 10px;
+	}
+	
+	#DivMain{
+		width: 850px;
+		height: 900px;	
+		background-color:#55AAFF;
+	}
+	
+	.clearDiv{
+		clear:both;
+	}
+	
+</style>
+
+<SCRIPT LANGUAGE="VBScript">
+Public AgentConnection, Connector, WorkingProcessInfo, WorkingProcessConnection, InfoBaseInfo, InfoBaseShort, ClusterInfo, ClusterServer, path1C, pathLog, pathLogFolder, objLog, objFSO, objNet, pathParamRestart
+
+'Изменяем размер окна
+Window.ResizeTo 888,845
+
+'путь к исполняемому файлу 1С
+path1C = """C:\Program Files\1cv8\8.3.11.3034\bin\1cv8.exe"""
+
+'путь к логу
+pathLog = "\\c9n2\Obmen1C\LogRestartServer1C\"&GetFormattedDate&".txt"
+
+'Путь к файлу параметров регламентного задания
+pathParamFolder = "\\c9n2\Obmen1C\LogRestartServer1C\"
+pathParamRestart = "\\c9n2\Obmen1C\LogRestartServer1C\param.txt"
+
+Set objFSO = CreateObject("Scripting.FileSystemObject") 
+Set objNet = CreateObject("WScript.Network")
+
+'=======================================================
+'Функция для формирования имени лога
+Function GetFormattedDate
+  strDate = CDate(Date)
+  strDay = DatePart("d", strDate)
+  strMonth = DatePart("m", strDate)
+  strYear = DatePart("yyyy", strDate)
+  If strDay < 10 Then
+    strDay = "0" & strDay
+  End If
+  If strMonth < 10 Then
+    strMonth = "0" & strMonth
+  End If
+  GetFormattedDate = strYear & strMonth & strDay
+End Function
+
+'=======================================================
+'Добавить элемент в BaseList
+sub AddList(text, value)
+	Set newO = document.CreateElement("Option")
+	newO.Text = text
+	newO.Value = value
+	BaseList.add newO
+end sub
+
+'=======================================================
+'Изменение активности элементов управления
+sub ChangeEnableButtons(enabled)
+
+	bChangeReglament.Disabled = enabled
+	bDoWork.Disabled = enabled
+	bChangeParam.Disabled = enabled
+	bConnection.Disabled = enabled
+	BaseList.Disabled = enabled
+	ConfUser.Disabled = enabled
+	ConfPassword.Disabled = enabled
+	bConnection.Disabled = enabled
+	RepositoryPath.Disabled = enabled
+	RepositoryUser.Disabled = enabled
+	RepositoryPassword.Disabled = enabled
+	BlockTimeBegin.Disabled = enabled
+	BlockTimeEnd.Disabled = enabled
+	BlockMessage.Disabled = enabled
+	PermissionCode.Disabled = enabled
+	cbBlockStartSession.Disabled = enabled
+	cbBlockStartReglament.Disabled = enabled
+	cbBlockStartReglamentAfterRestart.Disabled = enabled
+	bFillStandsrt.Disabled = enabled
+	ServerList.Disabled = enabled
+	
+end sub
+'=======================================================
+'Обновление списка информационных баз выбранного сервера
+sub UpdateBaseList	
+	
+	'Очищаем список информационных баз
+	ClearList(BaseList)
+	
+	'Получаем наименование выбранного сервера
+	ClusterServer = ServerList.Options(ServerList.SelectedIndex).Value 
+	
+	if ClusterServer = "empty" then
+		exit sub
+	end if
+	
+	'Инициализировать необходимые переменные
+	Initialization(ClusterServer)
+	
+	AddList "", "empty"
+	
+	'Заполняем список информационных баз
+	For Each InfoBaseInfo In WorkingProcessConnection.GetInfoBases()    
+		AddList InfoBaseInfo.Name, InfoBaseInfo.Name
+	Next
+	
+end sub
+
+'=======================================================
+'Проверяем подключение к информационной базе
+function CheckInfoBaseInfo
+	if InfoBaseInfo.DBMS = "" then
+		AddTextArea "Не удалось подключиться к базе "& InfoBaseInfo.Name &" с текущим пользователем и паролем!"
+		CheckInfoBaseInfo = false
+		exit function
+	end if
+	CheckInfoBaseInfo = true
+end function
+
+'=======================================================
+'Отображение информации об информационной базе
+sub ShowInformationBase(ShowParam)
+	
+'	taLog.Value = taLog.Value & VbCrLf & 125/60 & "  " & 125%60
+'	exit sub
+	
+	WorkingProcessConnection.AddAuthentication "", ""
+	'Пробуем залогиниться, используя пользователь/пароль
+	WorkingProcessConnection.AddAuthentication ConfUser.Value, ConfPassword.Value	
+	
+	'Получение информации об информационной базе
+	GetInfoBaseInfo(BaseList.Options(BaseList.SelectedIndex).Value)
+	GetInfoBaseInfoShort(BaseList.Options(BaseList.SelectedIndex).Value)
+	
+	'Проверим подключение к ИБ
+	CheckInfoBaseInfo
+	
+	IF ShowParam <> false THEN
+		cbBlockStartSession.Checked = InfoBaseInfo.SessionsDenied
+		cbBlockStartReglament.Checked = InfoBaseInfo.ScheduledJobsDenied
+		BlockTimeBegin.Value = InfoBaseInfo.DeniedFrom
+		BlockTimeEnd.Value = InfoBaseInfo.DeniedTo
+		BlockMessage.Value = InfoBaseInfo.DeniedMessage 
+		PermissionCode.Value = InfoBaseInfo.PermissionCode
+	END IF
+	
+end sub
+
+'=======================================================
+'Получить ClusterInfo
+sub GetClustersInfo(AgentConnection, ClusterServer,ClusterInfo)
+	For Each ClusterInfo In AgentConnection.GetClusters()
+		if LCase(ClusterInfo.HostName) = LCase(ClusterServer) Then
+			exit for
+		End If  
+	Next
+end sub
+
+'=======================================================
+'Получить InfoBaseInfo
+sub GetInfoBaseInfo(NameBase)
+	For Each InfoBaseInfo In WorkingProcessConnection.GetInfoBases()    
+		If LCase(InfoBaseInfo.Name) = LCase(NameBase) Then
+			Exit For
+		End If  
+	Next	
+end sub 
+
+'=======================================================
+'Получить InfoBaseInfoShort
+sub GetInfoBaseInfoShort(NameBase) 
+	For Each InfoBaseShort In AgentConnection.GetInfoBases(ClusterInfo)
+		If LCase(InfoBaseShort.Name) = LCase(NameBase) Then		
+			Exit For
+		End If
+	Next	
+end sub 
+
+'=======================================================
+'Очистить список
+SUB ClearList(List) 
+	For Each oChild in List.Options
+		oChild.RemoveNode
+	Next
+END SUB
+
+'=======================================================
+'Инициализация параметров и переменных для выбранного сервера
+sub Initialization(ClusterServer)
+	
+	Set Connector = CreateObject("V83.COMConnector")
+	Set AgentConnection = Connector.ConnectAgent(ClusterServer)
+	
+	'получить информацию о кластере
+	GetClustersInfo AgentConnection, ClusterServer, ClusterInfo
+	
+	AgentConnection.Authenticate ClusterInfo, "", ""
+
+	Set WorkingProcessInfo = AgentConnection.GetWorkingProcesses(ClusterInfo)(0)
+	ConnectString = WorkingProcessInfo.HostName & ":" & WorkingProcessInfo.MainPort
+	Set WorkingProcessConnection = Connector.ConnectWorkingProcess(ConnectString)	
+	
+end sub
+
+'=======================================================
+'Изменить параметры информационной базы
+sub ChangeParamInfoBase
+
+	if IsObject(InfoBaseInfo) = false OR CheckInfoBaseInfo = false then
+		exit sub
+	end if
+
+	AddTextArea "Начало изменения параметров информационной базы " & InfoBaseInfo.Name
+			
+	InfoBaseInfo.SessionsDenied = cbBlockStartSession.Checked
+	InfoBaseInfo.ScheduledJobsDenied = cbBlockStartReglament.Checked
+	InfoBaseInfo.DeniedFrom = BlockTimeBegin.Value
+	InfoBaseInfo.DeniedTo = BlockTimeEnd.Value
+	InfoBaseInfo.DeniedMessage = BlockMessage.Value
+	InfoBaseInfo.PermissionCode = PermissionCode.Value
+
+	WorkingProcessConnection.UpdateInfoBase(InfoBaseInfo)
+
+	AddTextArea "Окончание изменения параметров информационной базы " & InfoBaseInfo.Name
+
+end sub
+
+'=======================================================
+'Выполнение списка действий
+sub DoWork
+
+	'ShowInformationBase - без замены параметров !!!!
+	ShowInformationBase false
+	
+	if IsObject(InfoBaseInfo) = false OR CheckInfoBaseInfo = false then
+		exit sub
+	end if
+
+	ChangeEnableButtons true
+	
+	'Если нужно перезагрузить агент сервера 1С
+	if cbRestartServer.checked then
+	
+		'при перезагрузке сервера нужно 
+		'0) дождаться, когда будет без 5 минут до начала блокировки
+		'1) установить блокировку на все базы сервера
+		'2) дождаться начала времени блокировки
+		'3) удалить все процессы
+		'4) обновить базу (если нужно)
+		'5) перезапустить сервер
+		'6) снять блокировки
+	
+		'Проверяем, открыт ли конфигуратор - информируем
+		if cbUpdateBase.checked then
+			IF FindDesignerSession Then
+				AddTextArea "Внимание! Открыт конфигуратор базы " & InfoBaseInfo.Name & ". Для обновления базы необходимо выйти из него!"
+			end if
+		end if
+	
+		'Шаг 0
+		waitTime = DateDiff("s", Now(), BlockTimeBegin.Value)
+		
+		if waitTime > 300 then
+			'ждём начала времени блокировки (без 5 минут)
+			Timer(waitTime-290)
+		end if
+	
+		'Шаг 1
+		For Each InfoBaseInfo In WorkingProcessConnection.GetInfoBases() 		
+			BlockInfoBase
+		Next
+		
+		'Шаг 2
+		waitTime = DateDiff("s", Now(), BlockTimeBegin.Value)
+		
+		if waitTime > 10 then
+			'ждём начала времени блокировки
+			Timer(waitTime)
+		end if	
+		
+		'Шаг 5
+		RestartServer
+		
+		'Ждём пока служба запуститься 
+		Timer(60)
+		
+		'Снова подключаемся к серверу
+		Initialization(ClusterServer)
+		
+		ShowInformationBase true
+		
+		'Шаг 3
+		For Each InfoBaseShort In AgentConnection.GetInfoBases(ClusterInfo)
+			CloseSessions
+		Next	
+		
+		'Шаг 4
+		if cbUpdateBase.checked then
+			'Получение информации об информационной базе
+			GetInfoBaseInfo(BaseList.Options(BaseList.SelectedIndex).Value)
+			GetInfoBaseInfoShort(BaseList.Options(BaseList.SelectedIndex).Value)
+			
+			'Проверяем, открыт ли конфигуратор - не проводим обновление
+			IF FindDesignerSession Then
+				AddTextArea "Внимание! Открыт конфигуратор базы " & InfoBaseInfo.Name & ". База обновлена не будет!"
+			else
+				'обновление базы
+				UpdateBase true
+			end if
+			
+			'Снова подключаемся к серверу
+			Initialization(ClusterServer)
+		
+			ShowInformationBase false
+		
+			'Получение информации об информационной базе
+			GetInfoBaseInfo(BaseList.Options(BaseList.SelectedIndex).Value)
+			GetInfoBaseInfoShort(BaseList.Options(BaseList.SelectedIndex).Value)
+			
+		else
+			'Шаг 3
+			For Each InfoBaseShort In AgentConnection.GetInfoBases(ClusterInfo)
+				CloseSessions
+			Next
+		end if
+		
+		'Шаг 6
+		For Each InfoBaseInfo In WorkingProcessConnection.GetInfoBases()     
+			UnBlockInfoBase
+		Next
+		
+		ShowInformationBase true
+		
+	'Если нужно только обновить базу
+	elseif cbUpdateBase.checked and CheckInfoBaseInfo = true then
+	
+		'Проверяем, открыт ли конфигуратор - не проводим обновление
+		IF FindDesignerSession Then
+			AddTextArea "Внимание! Открыт конфигуратор базы " & InfoBaseInfo.Name & ". База обновлена не будет!"
+		else
+			'обновление базы
+			UpdateBase false
+		end if
+		
+	end if
+	
+	ChangeEnableButtons false
+	
+end sub
+
+'=======================================================
+'Обновить информационную базу
+sub UpdateBase(Restart)
+
+	ChangeEnableButtons true
+
+	'ждём, пока не будет без 5 минут, чтобы установить блокировку
+	waitTime = DateDiff("s", Now(), BlockTimeBegin.Value)
+	
+	if waitTime > 300 then
+		'ждём начала времени блокировки (без 5 минут)
+		Timer(waitTime-290)
+	end if
+	
+	IF Restart = false THEN
+		'Блокируем базу
+		BlockInfoBase
+	END IF
+	
+	'ждём начала времени блокировки
+	waitTime = DateDiff("s", Now(), BlockTimeBegin.Value)
+	
+	if waitTime > 10 then
+		Timer(waitTime)
+	end if
+
+	AddTextArea "Начало обновления базы " & InfoBaseInfo.Name
+	
+	RepositoryF = RepositoryPath.Value 'путь к хранилищу
+	RepositoryN = RepositoryUser.Value 'пользователь хранилища
+	RepositoryP = RepositoryPassword.Value 'пароль
+	
+	'строка соединения с базой
+	IBConnectionString = "Srvr="&ServerList.Options(ServerList.SelectedIndex).Text&";Ref="&BaseList.Options(BaseList.SelectedIndex).Value&";UC="""&PermissionCode.Value&""";"
+	
+	'Завершаем все соединения
+	CloseSessions 
+	
+	'=========== ЗАПУСКАЕМ ОБНОВЛЕНИЕ 
+	Set WSupdate = CreateObject("WScript.Shell")
+	
+	StrRun = path1C & " DESIGNER /RunModeOrdinaryApplication /IBConnectionString " & IBConnectionString & _
+	" /N """ & ConfUser.Value & """ " &_
+	" /P """ & ConfPassword.Value & """ " &_
+	" /UC """ & PermissionCode.Value & """ " &_
+	" /DisableStartupMessages " &_
+	" /ConfigurationRepositoryF """ & RepositoryF &""" " & _
+	" /ConfigurationRepositoryN """ & RepositoryN &""" " & _
+	" /ConfigurationRepositoryP """ & RepositoryP &""" " & _
+	" /ConfigurationRepositoryUpdateCfg -force -revised /UpdateDBCfg -server"
+		
+	AddTextArea StrRun
+	WSupdate.Run StrRun,0,true
+	
+	'=========== УСТАНАВЛИВАЕМ МЕТКУ
+	Set WSupdate = CreateObject("WScript.Shell")
+	
+	StrRun = path1C & " DESIGNER /RunModeOrdinaryApplication /IBConnectionString " & IBConnectionString & _
+	" /N """ & ConfUser.Value & """ " &_
+	" /P """ & ConfPassword.Value & """ " &_
+	" /UC """ & PermissionCode.Value & """ " &_
+	" /DisableStartupMessages " &_
+	" /ConfigurationRepositoryF """ & RepositoryF &""" " & _
+	" /ConfigurationRepositoryN """ & RepositoryN &""" " & _
+	" /ConfigurationRepositoryP """ & RepositoryP &""" " & _
+	" /ConfigurationRepositorySetLabel -name """ & "Обновлено "& Now() & """ "
+		
+	AddTextArea "Устанавливаем метку в хранилище"
+	WSupdate.Run StrRun,0,true
+	
+	AddTextArea "Окончание обновления базы " & InfoBaseInfo.Name
+	
+	IF Restart = false THEN
+	
+		'Снова подключаемся к серверу
+		Initialization(ClusterServer)
+	
+		'Получение информации об информационной базе
+		GetInfoBaseInfo(BaseList.Options(BaseList.SelectedIndex).Value)
+		GetInfoBaseInfoShort(BaseList.Options(BaseList.SelectedIndex).Value)
+		
+		'Разблокируем базу
+		UnBlockInfoBase
+	END IF
+	
+	ChangeEnableButtons false
+	
+end sub
+
+'=======================================================
+'блокировка базы
+Sub BlockInfoBase
+
+	if IsObject(InfoBaseInfo) = false OR CheckInfoBaseInfo = false then
+		exit sub
+	end if
+
+	AddTextArea "Начало установки блокировки " & InfoBaseInfo.Name	
+
+    InfoBaseInfo.ScheduledJobsDenied = true
+    InfoBaseInfo.SessionsDenied = true
+	InfoBaseInfo.DeniedFrom = BlockTimeBegin.Value
+	InfoBaseInfo.DeniedTo = BlockTimeEnd.Value
+	InfoBaseInfo.DeniedMessage = BlockMessage.Value
+
+    WorkingProcessConnection.UpdateInfoBase(InfoBaseInfo)
+	
+	AddTextArea "Конец установки блокировки " & InfoBaseInfo.Name
+	
+End Sub
+
+'=======================================================
+'отменяет блокировку базы
+Sub UnblockInfoBase()
+
+	if IsObject(InfoBaseInfo) = false OR CheckInfoBaseInfo = false then
+		exit sub
+	end if
+
+	AddTextArea "Начало снятия блокировки " & InfoBaseInfo.Name
+
+	'Если нужно снять блокировку с регламентных заданий
+	if cbBlockStartReglamentAfterRestart.checked = false then	
+		InfoBaseInfo.ScheduledJobsDenied = False
+		InfoBaseInfo.SessionsDenied = False
+	end if    
+
+    WorkingProcessConnection.UpdateInfoBase(InfoBaseInfo)
+	
+	AddTextArea "Конец снятия блокировки " & InfoBaseInfo.Name 
+	
+End Sub
+
+'=======================================================
+'перезапуск сервера
+sub RestartServer
+	
+	'Соединяемся с сервером
+	Set objWMIService = GetObject("winmgmts:" _ 
+           & "{impersonationLevel=impersonate}!\\" _ 
+          & ClusterServer & "\root\cimv2") 
+			
+	'имя службы
+	strServiceName = "1C:Enterprise 8.3 Server Agent (x86-64)"
+	
+	'ищем службу с заданным именем
+ 	Set colListOfServices = objWMIService.ExecQuery _ 
+            ("Select * from Win32_Service where name ='"&strServiceName&"'") 
+	
+	'находим объект службы
+	For Each objService in colListOfServices
+		if objService.name = strServiceName then
+			AddTextArea objService.name & " "& objService.state
+			exit for
+		end if
+    Next 
+	
+	'проверяем результат поиска
+	if IsObject(objService) = false then
+		AddTextArea "Служба не найдена"
+		exit sub
+	end if	
+	
+	'останавливаем службу
+	objService.StopService() 
+	
+	AddTextArea "Служба " & objService.name & " остановлена"
+	
+	'ждём минуту
+	Timer(60)
+	
+	'убиваем процессы
+	set PsProcesses=objWMIService.ExecQuery("SELECT * FROM Win32_Process where name = 'rmngr.exe'") 
+	For Each PsProcess in PsProcesses                
+		PsProcess.Terminate()
+		AddTextArea "Процесс rmngr.exe удален"
+	NEXT 
+	
+	set PsProcesses=objWMIService.ExecQuery("SELECT * FROM Win32_Process where name = 'rphost.exe'") 
+	For Each PsProcess in PsProcesses                
+		PsProcess.Terminate()
+		AddTextArea "Процесс rphost.exe удален"
+	NEXT 
+	
+	set PsProcesses=objWMIService.ExecQuery("SELECT * FROM Win32_Process where name = 'ragent.exe'") 
+	For Each PsProcess in PsProcesses                
+		PsProcess.Terminate()
+		AddTextArea "Процесс ragent.exe удален"
+	NEXT 
+	
+	'ждём 60 сек и запускаем
+	Timer(60)
+
+	'останавливаем службу
+	objService.StartService() 
+	
+	AddTextArea "Служба " & objService.name & " запущена"
+	
+end sub
+
+'=======================================================
+'возвращает количество сессий ИБ
+Function GetCountInfoBaseSessions()
+    Dim InfoBaseSessions
+
+    InfoBaseSessions = AgentConnection.GetInfoBaseSessions(ClusterInfo, InfoBaseShort)
+    GetCountInfoBaseSessions = UBound(InfoBaseSessions)+1
+
+End Function
+
+'=======================================================
+'Запись лога
+sub AddTextArea(Text)
+
+'	on error resume next
+
+	taLog.Value = taLog.Value & VbCrLf & Now() & " : " & Text
+	
+	'Автоскролл в низ textarea
+	taLog.ScrollTop = taLog.ScrollHeight
+	
+	Set objLog =  objFSO.OpenTextFile(pathLog, 8, True)	
+	objLog.WriteLine Now() & " (" & objNet.ComputerName & " " & objNet.UserName & ") : " & Text
+	objLog.Close
+	
+end sub
+
+'=======================================================
+'Поиск запущеного конфигуратора текущей ИБ
+function FindDesignerSession
+	
+	For Each SessionInfo in AgentConnection.GetInfoBaseSessions(ClusterInfo, InfoBaseShort)
+        If SessionInfo.AppID = "Designer" Then
+			FindDesignerSession = true
+			exit function
+		end if
+	Next
+
+	FindDesignerSession = false
+end function
+
+'=======================================================
+'Завершение соединений
+sub CloseSessions
+
+	on error resume next
+
+	AddTextArea "Начало завершения сеансов " & InfoBaseShort.Name
+	
+	For Each SessionInfo in AgentConnection.GetInfoBaseSessions(ClusterInfo, InfoBaseShort)
+        AgentConnection.TerminateSession ClusterInfo, SessionInfo
+	Next
+
+	AddTextArea "Все сеансы успешно завершены " & InfoBaseShort.Name
+	
+end sub
+
+'=======================================================
+'Имитация задержки
+sub Timer(second)
+
+	AddTextArea "Начало ожидания : " & second & " сек"
+
+	Set WshShell = CreateObject("WScript.Shell")
+	WshShell.Run "cmd /c ping localhost -n " & second,0, true
+
+	AddTextArea "Ожидание окончено"
+	
+end sub
+
+'=======================================================
+'Прочитать параметры регламетного задания
+sub CheckReglamentRestart
+
+	on error resume next
+
+	'проверяем доступность папки с параметром скрипта
+	set folder = objFSO.GetFolder(pathParamFolder)
+	
+	'если каталог недоступен
+	if err.number <> 0 then
+		cbReglament.disabled = true
+		bChangeReglament.disabled = true
+		lChangeReglament.disabled = true
+		exit sub
+	end if
+	
+	'Если файл существует
+	if objFSO.FileExists(pathParamRestart) then
+	
+		'проверяем размер файла, т.к. нельзя читать из пустого файла
+		if objFSO.GetFile(pathParamRestart).Size = 0 then
+			Res = false
+		else
+			'считываем содержимое файла параметров
+			Set ts = objFSO.OpenTextFile(pathParamRestart, 1)
+			s = LCase(ts.ReadLine)
+			
+			if s = "on" then
+				Res = true 'включен
+			else
+				Res = false 'выключен
+			end if
+			
+			ts.close
+			
+		end if
+		
+	else
+		'Создаём файл, т.к. его нет
+		objFSO.CreateTextFile pathParamRestart, true
+		Res = false
+	end if
+
+	cbReglament.checked = Res
+	
+end sub
+
+'=======================================================
+'Изменить параметры регламетного задания
+sub ChangeReglamentFile(text)
+
+	'Если файл не пустой, не считываем содержимое
+	if objFSO.GetFile(pathParamRestart).Size <> 0 then	
+		Set fileR = objFSO.OpenTextFile(pathParamRestart)		
+		s = LCase(fileR.ReadLine)
+		fileR.close
+	end if
+	
+	if s <> text then
+		Set fileW = objFSO.OpenTextFile(pathParamRestart,2)
+		fileW.WriteLine text
+		fileW.Close
+	end if	
+
+end sub 
+
+'=======================================================
+'Вкл/выкл регламентный перезапуск службы
+sub ChangeReglament
+	
+	'Если нужно включить скрипт
+	if cbReglament.checked = true then	
+		ChangeReglamentFile "on"
+		AddTextArea "Регламентное задание включено"
+	else	
+		ChangeReglamentFile "off"	
+		AddTextArea "Регламентное задание выключено"
+	end if
+
+end sub
+
+'=======================================================
+'Если длина строки 1, то добавляет спереди 0
+function AddZero(text)
+	if len(text) = 1 then
+		AddZero = "0"&text
+	else
+		AddZero = text
+	end if
+end function
+
+'=======================================================
+'Заполнить стандартными значениями
+sub FillStandartParam
+	dateStart = Now()
+	dateEnd = DateAdd("n", 30, dateStart)
+	
+	BlockTimeBegin.Value = dateStart
+	BlockTimeEnd.Value = dateEnd
+	BlockMessage.Value = "Внимание! Работа 1С будет приостановлена до " & AddZero(DatePart("h",dateEnd)) &":"& AddZero(DatePart("N",dateEnd))
+end sub
+
+</SCRIPT>
+
+</head>
+
+<body>
+
+	<div id="DivMain">
+	
+		<div id="divServer">
+			<label for="ServerList">Сервер:</label>
+			<select id = "ServerList" name="ServerList" OnChange = "UpdateBaseList()" title="Список серверов">
+				<option value = "empty"></option>
+				<option value = "C9N2" >C9N2</option>
+				<option value = "SRV-KNA-APP-02">SRV-KNA-APP-02</option>
+				<option value = "SRV-KNA-APP-03">SRV-KNA-APP-03</option>				
+			</select>
+		</div>
+		
+		<div id="divUpdateBase">
+			
+			<label class="LabelBlock"><input id="cbUpdateBase" type="checkbox">Обновление ИБ</label>
+			
+			<div id="DivConfparam">
+				<h4 class="headerGroup">Подключение к ИБ</h4>
+				
+				<table>
+					<tr>
+						<td><label for="BaseList">ИБ:</label></td>
+						<td><select id="BaseList" name="BaseList" OnChange = "ShowInformationBase(true)" title="Список информационных баз сервера"></select></td>
+					</tr>
+					<tr>
+						<td><label>Пользователь:</label></td>
+						<td><input id="ConfUser" type="text" title="Имя пользователя базы, под которым будет произведён вход"></td>
+					</tr>
+					<tr>
+						<td><label>Пароль:</label></td>
+						<td><input id="ConfPassword" type="text" title="Пароль пользователя базы, под которым будет произведён вход"></td>
+					</tr>
+					<tr>
+						<td colspan="2"><input id="bConnection" class = "button" type = "button" value = "Подключиться к ИБ" onclick = "ShowInformationBase(true)"></td>
+					</tr>
+				</table>
+
+			</div>	
+			
+			<div id="DivRepository">
+				<h4 class="headerGroup">Подключение к хранилищу</h4>
+				
+				<table>
+					<tr>
+						<td><label for="BaseList">Путь к хранилищу:</label></td>
+						<td><input id="RepositoryPath" type="text" title="Полный путь к хранилищу конфигурации"></select></td>
+					</tr>
+					<tr>
+						<td><label>Пользователь:</label></td>
+						<td><input id="RepositoryUser" type="text" title="Имя пользователя хранилища"></td>
+					</tr>
+					<tr>
+						<td><label>Пароль:</label></td>
+						<td><input id="RepositoryPassword" type="text" title="Пароль пользователя хранилища"></td>
+					</tr>
+				</table>
+
+			</div>
+			
+			<div class="clearDiv">
+			</div>
+			
+		</div>
+		
+		<div id="divRestart">
+			<label class="LabelBlock"><input id="cbRestartServer" type="checkbox">Рестарт сервера</label>
+			<h4 class="headerGroup">Параметры базы</h4>
+			<table>
+				<tr>
+					<td>Начало:</td>
+					<td><input id="BlockTimeBegin" type = "text" title="С этого времени начнётся блокировка базы"></td>
+					<td>Окончание:</td>
+					<td><input id="BlockTimeEnd" type = "text" title="Блокировка базы продлится до этого времени"></td>
+				</tr>
+				<tr>
+					<td>Сообщение:</td>
+					<td colspan="3"><input id="BlockMessage" type = "text" title="Сообщение пользователям 1С"></td>
+				</tr>
+				<tr>
+					<td>Код разрешения:</td>
+					<td><input id="PermissionCode" type = "text" title="Код разрешения на запуск базы при блокировании"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><label class="LabelBlock"><input id="cbBlockStartSession" type="checkbox">Блокировка начала сеансов</label></td>
+					<td colspan="2"><label class="LabelBlock"><input id="cbBlockStartReglament" type="checkbox">Блокировка регламентных заданий</label></td>
+				</tr>
+				<tr>
+					<td colspan="4"><label class="LabelBlock"><input id="cbBlockStartReglamentAfterRestart" type="checkbox">Оставить блокировку после обновления / рестарта</label></td>
+				</tr>
+				<tr>
+					<td colspan="3"><input id="bFillStandsrt" type = "button" value = "Заполнить настройки по умолчанию" onclick="FillStandartParam()"></td>
+					<td><input id="bChangeParam" type = "button" value = "Сохранить параметры ИБ" onclick = "ChangeParamInfoBase()" title="Изменить параметры информационной базы"></td>
+				</tr>
+				<tr>
+					<td colspan="3"><label id="lChangeReglament" class="LabelBlock"><input id="cbReglament" type="checkbox">Регламентный перезапуск службы 1С</label></td>
+					<td><input id="bChangeReglament" class = "button" type = "button" value = "Сохранить настройки регламента" onclick = "ChangeReglament()"></td>
+				</tr>
+			</table>
+		</div>
+		
+		<input id="bDoWork" class = "button" type = "button" value = "Выполнить" onclick = "DoWork()">		
+		<textarea id="taLog" readonly="true">Лог:</textarea>	
+		
+	</div>
+</body>
+
+<SCRIPT LANGUAGE="VBScript">
+	CheckReglamentRestart()
+</SCRIPT>
+
+</html>
