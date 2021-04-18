@@ -70,13 +70,14 @@
         3 Подсистема Обновление 1с
       </button>
       <br></br>
-      <button id="indexbutnRestartSrv" type="button" class="btn  btn-lg btn-outline-danger">
-        4 Подсистема Рестарт сервера 1с
+      <button id="indexbutnGIT" type="button" class="btn  btn-lg btn-outline-danger">
+        4 Подсистема GIT
       </button>
     </div>
     <!--  <button id="goback" type="button" class="btn btn-link">Назад</button> -->
     <div id="SonarQubesystem" class=" pading10 container container-fluid ">
-      <p>Данная подсистема позволяет запустить <mark>SonarQube</mark>. Для того, что бы произвести <mark>проверку качества кода</mark> , после выгрузки последней версии конфигурации.</p> 
+      <p>Данная подсистема позволяет запустить <mark>SonarQube</mark>. Для того, что бы произвести <mark>проверку
+          качества кода</mark> , после выгрузки последней версии конфигурации.</p>
 
       <button id="indexbutnSonarLoad" type="button" class="btn  btn-outline-secondary  btn-block">
         Запуск SonarQube
@@ -100,7 +101,7 @@
         Открыть адрес проекта(отсканированного проекта сонар сканером)
       </button>
       <!-- Модальное окно -->
-     <!--  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      <!--  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -120,8 +121,69 @@
       </div> -->
     </div>
     <div id="testdiv" class="pading10">
-      <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С: Предприятие».</p> 
-      <button id="lunch1c" type="button" class="btn btn-warning">Запуск  «1С: Предприятие» в режиме менеджера по тестированию</button>
+      <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске
+        будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С:
+        Предприятие».</p>
+      <button id="lunch1c" type="button" class="btn btn-warning">Запуск «1С: Предприятие» в режиме менеджера по
+        тестированию</button>
+    </div>
+  </div>
+  <div id="lunchConsole1c" class=" pading10 container container-fluid">
+    <p>Данная подсистема позволяет <mark>Обновить ИБ</mark> и выполнить <mark> перезапуск службы «1С:
+        Предприятие»</mark> </p>
+    <div id="grpupsrv" class="container container-fluid btn-group">
+      <p class="padding form-label">Сервер: </p>
+      <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+        <option selected>Выбрать сервер</option>
+        <option value="1">С9N2</option>
+        <option value="2">srv-kna-app-03</option>
+        <option value="3">srv-kna-app-04</option>
+      </select>
+    </div>
+    <hr color="#cc0000">
+
+    <input id="uploadib" type="checkbox" class="form-check-input">Обновление ИБ</input>
+    <div id="grpupsrv" class="container container-fluid btn-group">
+      <div id="grpupsrv" class="container container-fluid btn-group-vertical">
+        <h5>Подключение к ИБ</h5>
+        <div class="btn-group">
+          <p class="padding form-label">ИБ: </p>
+          <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+            <option selected>Выбрать инф базу</option>
+            <option value="1">DPU</option>
+            <option value="2">TOIR</option>
+            <option value="3">ПКИ</option>
+          </select>
+        </div>
+      </div>
+      <div id="grpupsrv" class="container btn-group-vertical">
+        <h5>Подключение к хранилищу</h5>
+        <div class="form-group row">
+          <p class="form-label col-sm-auto ">Сервер: </p>
+          <div class="col-sm-auto">
+          <input type="text" class="form-control"></input></div>
+        </div>
+        <div class="form-group row">
+          <p class="col-form-label col-sm-auto ">Пользователь: </p>
+          <div class="col-sm-auto">
+            <input type="text" class="form-control"></input>
+          </div>
+        </div>
+        <div class="form-group row">
+          <p class="col-form-label col-sm-auto ">Пароль: </p>
+          <div class="col-sm-auto">
+            <input type="text"  class="form-control"></input>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="GITposds" class="pading10 container container-fluid">
+      <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске
+        будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С:
+        Предприятие».</p>
+      <button id="lunch1c" type="button" class="btn btn-warning">Запуск «1С: Предприятие» в режиме менеджера по
+        тестированию</button>
+
     </div>
   </div>
   <script src="scripts/bootstrap.min.js"></script>

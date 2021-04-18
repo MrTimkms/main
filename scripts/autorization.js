@@ -2,6 +2,9 @@ $("#nopass").hide();
 $("#yespass").hide();
 $("#avtdiv").hide();
 $("#SonarQubesystem").hide();
+$("#lunchConsole1c").show();
+$("#testdiv").hide();
+$("#GITposds").hide(); 
 //При авторизации
 $(function () {
   $(document).on("click", "#avtbtn", function () {
@@ -44,6 +47,8 @@ $(function () {
   $(document).on("click", "#indexbutnTest", function () {
     $("#SonarQubesystem").hide();
     $("#testdiv").show();
+    $("#lunchConsole1c").hide();
+    $("#GITposds").hide(); 
   });
 });
 //Открытие подсистемы сонар
@@ -51,6 +56,26 @@ $(function () {
   $(document).on("click", "#indexbutnSonar", function () {
     $("#SonarQubesystem").show();
     $("#testdiv").hide();
+    $("#lunchConsole1c").hide();
+    $("#GITposds").hide(); 
+  });
+});
+//Открытие подсистемы Обновление 1с
+$(function () {
+  $(document).on("click", "#indexbutOnload", function () {
+    $("#SonarQubesystem").hide();
+    $("#testdiv").hide();
+    $("#lunchConsole1c").show();
+    $("#GITposds").hide(); 
+  });
+});
+//Открытие подсистемы GIT
+$(function () {
+  $(document).on("click", "#indexbutnGIT", function () {
+    $("#SonarQubesystem").hide();
+    $("#testdiv").hide();
+    $("#lunchConsole1c").hide();
+    $("#GITposds").show(); 
   });
 });
 //Окрытие 1с 
@@ -64,7 +89,7 @@ $(function () {
 $(function () {
   $(document).on("click", "#indexbutnSonarLoad", function () {
     var ws = new ActiveXObject("Wscript.Shell");
-    ws.Run("C:\\WINDOWS\\system32\\calc.exe", 0);
+    ws.Run("C:\\sonarqube\\bin\\windows-x86-64\\StartSonar.bat", 0);
   });
 });
 //Запуск сканирования базы
@@ -72,7 +97,10 @@ $(function () {
   $(document).on("click", "#SonarQubescaner", function () {
     var selectBase = $("#selectBase").val();
     if (selectBase == 1) {
-      var adress = "C:\\WINDOWS\\system32\\calc.exe";
+      var adress = "C:\\dpu\\project1c\\check.bat";
+    }
+    else if (selectBase == 3) {
+      var adress = "C:\\project1c\\check.bat";
     }
     else { var adress = "C:\\WINDOWS\\system32\\calc.exe"; }
     var ws = new ActiveXObject("Wscript.Shell");
@@ -82,6 +110,6 @@ $(function () {
 //Открытие адресса проекта
 $(function () {
   $(document).on("click", "#indexbutnSonarLoad", function () {
-    window.location.href = "https://music.yandex.ru";
+    window.location.href = "http://localhost:9000";
   });
 });
