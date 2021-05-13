@@ -76,7 +76,8 @@
     </div>
     <!--  <button id="goback" type="button" class="btn btn-link">Назад</button> -->
     <div id="SonarQubesystem" class=" pading10 container container-fluid ">
-      <p>Данная подсистема позволяет запустить <mark>SonarQube</mark>. Для того, что бы произвести <mark>проверку качества кода</mark> , после выгрузки последней версии конфигурации.</p> 
+      <p>Данная подсистема позволяет запустить <mark>SonarQube</mark>. Для того, что бы произвести <mark>проверку
+          качества кода</mark> , после выгрузки последней версии конфигурации.</p>
 
       <button id="indexbutnSonarLoad" type="button" class="btn  btn-outline-secondary  btn-block">
         Запуск SonarQube
@@ -100,7 +101,7 @@
         Открыть адрес проекта(отсканированного проекта сонар сканером)
       </button>
       <!-- Модальное окно -->
-     <!--  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      <!--  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -120,8 +121,150 @@
       </div> -->
     </div>
     <div id="testdiv" class="pading10">
-      <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С: Предприятие».</p> 
-      <button id="lunch1c" type="button" class="btn btn-warning">Запуск  «1С: Предприятие» в режиме менеджера по тестированию</button>
+      <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске
+        будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С:
+        Предприятие».</p>
+      <button id="lunch1c" type="button" class="btn btn-warning">Запуск «1С: Предприятие» в режиме менеджера по
+        тестированию</button>
+    </div>
+  </div>
+  <div id="lunchConsole1c" class=" pading10 container container-fluid">
+    <p>Данная подсистема позволяет <mark>Обновить ИБ</mark> и выполнить <mark> перезапуск службы «1С:
+        Предприятие»</mark> </p>
+    <div id="grpupsrv" class="container container-fluid btn-group">
+      <p class="padding form-label">Сервер: </p>
+      <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+        <option selected>Выбрать сервер</option>
+        <option value="1">С9N2</option>
+        <option value="2">srv-kna-app-03</option>
+        <option value="3">srv-kna-app-04</option>
+      </select>
+    </div>
+    <hr color="#cc0000"></hr>
+
+    <input id="uploadib" type="checkbox" class="form-check-input">Обновление ИБ</input>
+    <div id="grpupsrv" class="container container-fluid btn-group">
+      <div id="grpupsrv" class="container container-fluid btn-group-vertical justify-content-start">
+        <h5>Подключение к ИБ</h5>
+        <div class="btn-group ">
+          <p class="padding form-label">ИБ: </p>
+          <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+            <option selected>Выбрать инф базу</option>
+            <option value="1">DPU</option>
+            <option value="2">TOIR</option>
+            <option value="3">ПКИ</option>
+          </select>
+        </div>
+      </div>
+      <div id="grpupsrv" class="container btn-group-vertical justify-content-start">
+        <h5>Подключение к хранилищу</h5>
+        <div class="form-group row col-12 col-sm-12 col-xl-12">
+          <p class="form-label col-6 col-sm-6 col-xl-3 ">Путь к хранилищу: </p>
+          <div class="col-sm-auto">
+          <input type="text" class="form-control col-6 col-sm-6 col-xl-3 "></input></div>
+        </div>
+        <div class="form-group row col-12 col-sm-12 col-xl-12">
+          <p class="col-form-label col-6 col-sm-6 col-xl-3">Пользователь: </p>
+          <div class="col-sm-auto">
+            <input type="text" class="form-control col-6 col-sm-6 col-xl-3"></input>
+          </div>
+        </div>
+        <div class="form-group row  pading10 col-12 col-sm-12 col-xl-12">
+          <p class="col-form-label col-6 col-sm-6 col-xl-3 ">Пароль: </p>
+          <div class="col-sm-auto">
+            <input type="text"  class="form-control col-6 col-sm-6 col-xl-3"></input>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr color="#cc0000"></hr>
+    <input id="RELOADib" type="checkbox" class="form-check-input">Рестарт сервера</input>
+    <div id="grpupsrv" class="container container-fluid btn-group-vertical">
+        <div class="pading10 container d-flex justify-content-center"><h5 class="d-flex justify-content-center" >Параметры базы</h5></div>
+        <div id="grpupsrv" class="container container-fluid btn-group">
+          <div class="container container-fluid btn-group-vertical justify-content-start ">
+            <p class=" ">Начало: </p>
+            <div class="col-sm-auto">
+            <input type="datetime-local" class="form-control col-6 col-sm-6 col-xl-3 "></input></div>
+          </div>
+          <div class="container container-fluid btn-group-vertical justify-content-start">
+            <p class="">Окончание: </p>
+            <div class="col-sm-auto">
+              <input type="datetime-local" class="form-control col-6 col-sm-6 col-xl-3"></input>
+            </div>
+          </div>
+        </div>
+        <div class="form-group container container-fluid row col-12 col-sm-12 col-xl-12">
+          <p class="col-form-label col-2 col-sm-2 col-xl-2">Сообщение: </p>
+          <div class="pading10 col-10 col-sm-12 col-xl-10">
+            <input type="text" class="form-control col-10  col-sm-12 col-xl-12"></input>
+          </div>
+        </div>
+        <div id="grpupsrv" class="container pading10 btn-group row col-12 col-sm-12 col-xl-12">
+          <Div class=" col-10  col-sm-12 col-xl-3"><input id="RELOADib" type="checkbox" class="form-check-input ">Блокировка начала сеансов</input></Div>
+          <Div class=" col-10  col-sm-12 col-xl-3"> <input id="RELOADib" type="checkbox" class="form-check-input col-10  col-sm-12 col-xl-12">Рестарт сервера</input></Div>
+          <Div class=" col-10  col-sm-12 col-xl-6"> <input id="RELOADib" type="checkbox" class="form-check-input  col-10  col-sm-12 col-xl-12">Оставить блокировку после обновления / рестарта</input></Div>
+          <Div class=" col-10  col-sm-12 col-xl-12">    <button id="successuPLOAD" type="button" class="btn pading10 btn-lg btn-outline-primary">
+            заполнить настройки по умолчанию
+          </button></Div>
+        </div>
+       
+    </div>
+    <hr color="#cc0000"></hr>
+    <div class=" col-10  col-sm-12 col-xl-12"> <button id="successuPLOAD" type="button" class="btn pading10  btn-outline-success col-sm-12 col-xl-12">
+       выполнить
+     </button>
+     <hr color="#cc0000"></hr>
+     <p><textarea name="comment" class="pading10 form-control-plaintext border-info" readonly>Лог:</textarea></p>
+    </div>
+     </div>
+  </div>
+    <div id="GITposds" class="pading10 container container-fluid">
+      <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске
+        будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С:
+        Предприятие».</p>
+        <div id="grpupsrv" class="container container-fluid btn-group">
+          <div id="grpupsrv" class="container container-fluid btn-group-vertical justify-content-start">
+            <h5>Подключение к ИБ</h5>
+            <div class="btn-group ">
+              <p class="padding form-label">ИБ: </p>
+              <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+                <option selected>Выбрать инф базу</option>
+                <option value="1">DPU</option>
+                <option value="2">TOIR</option>
+                <option value="3">ПКИ</option>
+              </select>
+            </div>
+          </div>
+          <div id="grpupsrv" class="container btn-group-vertical justify-content-start">
+            <h5>Подключение к хранилищу</h5>
+            <div class="form-group row col-12 col-sm-12 col-xl-12">
+              <p class="form-label col-6 col-sm-6 col-xl-3 ">Путь к репозиторию: </p>
+              <div class="col-sm-auto">
+              <input type="text" class="form-control col-6 col-sm-6 col-xl-3 "></input></div>
+            </div>
+            <div class="form-group row col-12 col-sm-12 col-xl-12">
+              <p class="col-form-label col-6 col-sm-6 col-xl-3">Пользователь: </p>
+              <div class="col-sm-auto">
+                <input type="text" class="form-control col-6 col-sm-6 col-xl-3"></input>
+              </div>
+            </div>
+            <div class="form-group row  pading10 col-12 col-sm-12 col-xl-12">
+              <p class="col-form-label col-6 col-sm-6 col-xl-3 ">Коммит: </p>
+              <div class="col-sm-auto">
+                <input type="text"  class="form-control col-6 col-sm-6 col-xl-3"></input>
+              </div>
+            </div>
+             </div>
+          </div>
+        <hr color="#cc0000"></hr>
+        <div class=" col-10  col-sm-12 col-xl-12"> <button id="successuPLOAD" type="button" class="btn pading10  btn-outline-success col-sm-12 col-xl-12">
+           выполнить
+         </button>
+         <hr color="#cc0000"></hr>
+         <p><textarea name="comment" class="pading10 form-control-plaintext border-info" readonly>Лог:</textarea></p>
+        </div>
+
     </div>
   </div>
   <script src="scripts/bootstrap.min.js"></script>
