@@ -4,7 +4,8 @@ $("#avtdiv").hide();
 $("#SonarQubesystem").hide();
 $("#lunchConsole1c").show();
 $("#testdiv").hide();
-$("#GITposds").hide(); 
+$("#GITposds").hide();
+var numCheckArea=0;
 //При авторизации
 $(function () {
   $(document).on("click", "#avtbtn", function () {
@@ -89,7 +90,7 @@ $(function () {
 $(function () {
   $(document).on("click", "#indexbutnSonarLoad", function () {
     var ws = new ActiveXObject("Wscript.Shell");
-    ws.Run("C:\\sonarqube\\bin\\windows-x86-64\\StartSonar.bat", 0);
+    ws.Run("C:\\sonarqube\\bin\\windows-x86-64\\StartSonar.bat");
   });
 });
 //Запуск сканирования базы
@@ -109,7 +110,90 @@ $(function () {
 });
 //Открытие адресса проекта
 $(function () {
-  $(document).on("click", "#indexbutnSonarLoad", function () {
+  $(document).on("click", "#indexbutnSonarLoad2", function () {
     window.location.href = "http://localhost:9000";
+  });
+});
+//Заполнить параметры по умолчанию
+$(function () {
+  $(document).on("click", "#LOADstandart", function () {
+    var now = new Date();
+    var now2=addMinutes(now, 30);
+    var time = fixhourse(now);
+    var time2 = fixhourse(now2);
+    var today = givedate(now)
+    var today2 = givedate(now2)
+    $("#datestart").val(today);
+    $("#date-nostart").val(today2);
+    $("#textsoobsh").val('Внимание! Работа 1С будет приостановлена до '+ time2);
+    numCheckArea=numCheckArea+1;
+    $("#logupluad").text($("#logupluad").text()+" \n "+numCheckArea+". Установлены параметры по умолчанию для времени и сообщения в "+time+".")
+  });
+});
+//функция добавить минуты
+function addMinutes(date, minutes) {
+  return new Date(date.getTime() + minutes*60000);
+}
+//функция получить дату
+function givedate(now) {
+  var month     = (now.getMonth() + 1);
+    var day     = now.getDate();
+    var hours   = now.getHours();
+    var minute  = now.getMinutes();
+    if (month < 10)
+    month = "0" + month;
+    if (day < 10)
+    day = "0" + day;
+    if (hours < 10)
+    hours = "0" + hours;
+    if (minute < 10)
+    minute = "0" + minute;
+  return now.getFullYear() + '-' + month + '-' + day +'T'+ hours+':'+minute;
+}
+//функция исправить часы
+function fixhourse(now) {
+    var hours   = now.getHours();
+    var minute  = now.getMinutes();
+    if (hours < 10)
+    hours = "0" + hours;
+    if (minute < 10)
+    minute = "0" + minute;
+  return hours+':'+minute;
+}
+//При изменении selectbase
+$(function () {
+  $(document).on("change", "#selectBaseIB", function () {
+    var selectBase =   $("#selectBaseIB").val();
+    if(selectBase=1)
+    {
+      numCheckArea=numCheckArea+1;
+      $("#logupluad").text($("#logupluad").text()+" \n "+numCheckArea+". Выбрана информационная база: DPU на сервере srv-kna-app-03. Параметры для хранилищ заполнены по умолчанию. При нажатии выполнить будут выполнены выбранные функции.") 
+      $("#roadtobase").val('Внимание! Работа 1С будет приостановлена до '+ time2);
+    }
+  });
+});
+//При выборе перезапуск сервера
+$(function () {
+  $(document).on("change", "#RELOADib", function () {
+    numCheckArea=numCheckArea+1;
+    $("#logupluad").text($("#logupluad").text()+" \n "+numCheckArea+". При нажатии выполнить Сервер srv-kna-app-03 будет перезапущен."); 
+  });
+});
+//При нажатии на выполнить подсистема обновление
+$(function () {
+  $(document).on("click", "#successuPLOAD", function () {
+    var now = new Date();
+    var time = fixhourse(now);
+    numCheckArea=numCheckArea+1;
+    $("#logupluad").text($("#logupluad").text()+" \n "+numCheckArea+". Рестарт сервера srv-kna-app-03  выполнен в "+time+".");
+  });
+});
+//При нажатии на выполнить подсистема обновление
+$(function () {
+  $(document).on("click", "#successuPLOAD2", function () {
+    var now = new Date();
+    var time = fixhourse(now);
+    numCheckArea=numCheckArea+1;
+    $("#logupluad").text($("#logupluad").text()+" \n "+numCheckArea+". Рестарт сервера srv-kna-app-03  выполнен в "+time+".");
   });
 });

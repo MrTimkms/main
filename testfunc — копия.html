@@ -100,25 +100,6 @@
       <button id="SonarQubeSite" type="button" class="btn  btn-outline-success">
         Открыть адрес проекта(отсканированного проекта сонар сканером)
       </button>
-      <!-- Модальное окно -->
-      <!--  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Заголовок модального окна</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <div class="modal-body">
-              Будет запущен процесс проверки на ошибки базы:
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-              <button id="CheckSelectbase" type="button" class="btn btn-primary">Понял</button>
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
     <div id="testdiv" class="pading10">
       <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске
@@ -133,7 +114,7 @@
         Предприятие»</mark> </p>
     <div id="grpupsrv" class="container container-fluid btn-group">
       <p class="padding form-label">Сервер: </p>
-      <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+      <select id="selectBaseSRV" class="form-select-sm" aria-label="Default select example">
         <option selected>Выбрать сервер</option>
         <option value="1">С9N2</option>
         <option value="2">srv-kna-app-03</option>
@@ -143,13 +124,13 @@
     <hr color="#cc0000">
     </hr>
 
-    <input id="uploadib" type="checkbox" class="form-check-input">Обновление ИБ</input>
+    <input id="uploadib" type="checkbox" class="form-check-input ">Обновление ИБ</input>
     <div id="grpupsrv" class="container container-fluid btn-group">
       <div id="grpupsrv" class="container container-fluid btn-group-vertical justify-content-start">
         <h5>Подключение к ИБ</h5>
         <div class="btn-group ">
           <p class="padding form-label">ИБ: </p>
-          <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+          <select id="selectBaseIB" class="form-select-sm" aria-label="Default select example">
             <option selected>Выбрать инф базу</option>
             <option value="1">DPU</option>
             <option value="2">TOIR</option>
@@ -162,13 +143,13 @@
         <div class="form-group row col-12 col-sm-12 col-xl-12">
           <p class="form-label col-6 col-sm-6 col-xl-3 ">Путь к хранилищу: </p>
           <div class="col-sm-auto">
-            <input type="text" class="form-control col-6 col-sm-6 col-xl-3 "></input>
+            <input type="text" id="roadtobase" class="form-control col-6 col-sm-6 col-xl-3 "></input>
           </div>
         </div>
         <div class="form-group row col-12 col-sm-12 col-xl-12">
           <p class="col-form-label col-6 col-sm-6 col-xl-3">Пользователь: </p>
           <div class="col-sm-auto">
-            <input type="text" class="form-control col-6 col-sm-6 col-xl-3"></input>
+            <input type="text" id="user" class="form-control col-6 col-sm-6 col-xl-3"></input>
           </div>
         </div>
         <div class="form-group row  pading10 col-12 col-sm-12 col-xl-12">
@@ -190,20 +171,20 @@
         <div class="container container-fluid btn-group-vertical justify-content-start ">
           <p class=" ">Начало: </p>
           <div class="col-sm-auto">
-            <input type="datetime-local" class="form-control col-6 col-sm-6 col-xl-3 "></input>
+            <input id="datestart" type="datetime-local" class="form-control col-6 col-sm-6 col-xl-3 "></input>
           </div>
         </div>
         <div class="container container-fluid btn-group-vertical justify-content-start">
           <p class="">Окончание: </p>
           <div class="col-sm-auto">
-            <input type="datetime-local" class="form-control col-6 col-sm-6 col-xl-3"></input>
+            <input id="date-nostart" type="datetime-local" class="form-control col-6 col-sm-6 col-xl-3"></input>
           </div>
         </div>
       </div>
       <div class="form-group container container-fluid row col-12 col-sm-12 col-xl-12">
         <p class="col-form-label col-2 col-sm-2 col-xl-2">Сообщение: </p>
         <div class="pading10 col-10 col-sm-12 col-xl-10">
-          <input type="text" class="form-control col-10  col-sm-12 col-xl-12"></input>
+          <input id="textsoobsh" type="text" class="form-control col-10  col-sm-12 col-xl-12"></input>
         </div>
       </div>
       <div id="grpupsrv" class="container pading10 btn-group row col-12 col-sm-12 col-xl-12">
@@ -214,7 +195,7 @@
         <Div class=" col-10  col-sm-12 col-xl-6"> <input id="RELOADib" type="checkbox"
             class="form-check-input  col-10  col-sm-12 col-xl-12">Оставить блокировку после обновления /
           рестарта</input></Div>
-        <Div class=" col-10  col-sm-12 col-xl-12"> <button id="successuPLOAD" type="button"
+        <Div class=" col-10  col-sm-12 col-xl-12"> <button id="LOADstandart" type="button"
             class="btn pading10 btn-lg btn-outline-primary">
             заполнить настройки по умолчанию
           </button></Div>
@@ -229,20 +210,19 @@
       </button>
       <hr color="#cc0000">
       </hr>
-      <p><textarea name="comment" class="pading10 form-control-plaintext border-info" readonly>Лог:</textarea></p>
+      <p><textarea id="logupluad" name="comment" class="pading10 form-control-plaintext border-info" cols="60" rows="5"
+          placeholder="Лог:" readonly></textarea></p>
     </div>
   </div>
   </div>
   <div id="GITposds" class="pading10 container container-fluid">
-    <p>Данная подсистема позволяет запустить «1С: Предприятие» в режиме менеджера по тестированию. Также, при запуске
-      будет запущен, <mark>"vanessa-automation"</mark> инструмент тестирования прикладных решений на платформе «1С:
-      Предприятие».</p>
+    <p>Данная подсистема позволяет выгрузить файлы конфигурации «1С: Предприятие» в <mark>"GIT"</mark></p>
     <div id="grpupsrv" class="container container-fluid btn-group">
       <div id="grpupsrv" class="container container-fluid btn-group-vertical justify-content-start">
         <h5>Подключение к ИБ</h5>
         <div class="btn-group ">
           <p class="padding form-label">ИБ: </p>
-          <select id="selectBase" class="form-select-sm" aria-label="Default select example">
+          <select id="selectBaseGIT" class="form-select-sm" aria-label="Default select example">
             <option selected>Выбрать инф базу</option>
             <option value="1">DPU</option>
             <option value="2">TOIR</option>
@@ -255,13 +235,13 @@
         <div class="form-group row col-12 col-sm-12 col-xl-12">
           <p class="form-label col-6 col-sm-6 col-xl-3 ">Путь к репозиторию: </p>
           <div class="col-sm-auto">
-            <input type="text" class="form-control col-6 col-sm-6 col-xl-3 "></input>
+            <input type="text" class="form-control col-6 col-sm-6 col-xl-3 ">https://github.com/schacon/ticgit</input>
           </div>
         </div>
         <div class="form-group row col-12 col-sm-12 col-xl-12">
           <p class="col-form-label col-6 col-sm-6 col-xl-3">Пользователь: </p>
           <div class="col-sm-auto">
-            <input type="text" class="form-control col-6 col-sm-6 col-xl-3"></input>
+            <input type="text" class="form-control col-6 col-sm-6 col-xl-3">timofeevg3@gmail.com</input>
           </div>
         </div>
         <div class="form-group row  pading10 col-12 col-sm-12 col-xl-12">
@@ -274,7 +254,7 @@
     </div>
     <hr color="#cc0000">
     </hr>
-    <div class=" col-10  col-sm-12 col-xl-12"> <button id="successuPLOAD" type="button"
+    <div class=" col-10  col-sm-12 col-xl-12"> <button id="successuPLOAD2" type="button"
         class="btn pading10  btn-outline-success col-sm-12 col-xl-12">
         выполнить
       </button>
